@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genufy TechWorks | Digital Revenue Architecture</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            /* Genufy Brand Palette */
+            --g-navy: #0b0f19;
+            --g-dark: #1a1a2e;
+            --g-green: #9dfc5d;
+            --g-cyan: #00d2ff;
+            --g-white: #ffffff;
+            
+            /* Dark Theme Variables (Default) */
+            --bg-color: #0b0f19;
+            --bg-grad: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #0b0f19 80%);
+            --header-bg: rgba(11, 15, 25, 0.85);
+            --card-bg: rgba(26, 26, 46, 0.65);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border-light: rgba(0, 210, 255, 0.2);
+            --shadow-card: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(157, 252, 93, 0.1);
+            --path-core: rgba(255, 255, 255, 0.05);
+            --cloud-opacity: 0.15;
+            --bird-opacity: 0.4;
+            
+            /* Modular UI Variables - Dark */
+            --module-bg: rgba(0, 0, 0, 0.2);
+            --chip-bg: rgba(0, 210, 255, 0.05);
+            --chip-border: rgba(0, 210, 255, 0.3);
+            --chip-text: #00d2ff;
+            --insight-bg: rgba(157, 252, 93, 0.05);
+            --insight-border: #9dfc5d;
+            --outcome-text: #cbd5e1;
+            
+            --ring-border: rgba(0, 210, 255, 0.3);
+            --core-bg: radial-gradient(circle, #1a1a2e 0%, #0b0f19 100%);
+            --core-border: #00d2ff;
+            --core-icon: #9dfc5d;
+        }
+
+        body.light-mode {
+            /* Light Theme Variables (Salesforce Inspired) */
+            --bg-color: #eaf5fe;
+            --bg-grad: linear-gradient(180deg, #cde3fc 0%, #eaf5fe 100%);
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-primary: #032d60; 
+            --text-secondary: #475569;
+            --border-light: rgba(1, 118, 211, 0.2);
+            --shadow-card: 0 10px 30px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(1, 118, 211, 0.1);
+            --path-core: rgba(1, 118, 211, 0.15);
+            --cloud-opacity: 0.7;
+            --bird-opacity: 0.6;
+            
+            /* Modular UI Variables - Light */
+            --module-bg: rgba(255, 255, 255, 0.5);
+            --chip-bg: rgba(1, 118, 211, 0.05);
+            --chip-border: rgba(1, 118, 211, 0.3);
+            --chip-text: #0176d3;
+            --insight-bg: rgba(46, 132, 74, 0.05);
+            --insight-border: #2e844a;
+            --outcome-text: #181818;
+            
+            --ring-border: rgba(1, 118, 211, 0.3);
+            --core-bg: radial-gradient(circle, #ffffff 0%, #f4f6f9 100%);
+            --core-border: #0176d3;
+            --core-icon: #0176d3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* --- Ambient Background --- */
+        .ambient-sky { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-grad); z-index: -3; transition: background 0.5s ease; }
+
+        .cloud { position: fixed; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2300d2ff"><path d="M18.5 7.5c-0.2 0-0.4 0-0.5 0.1C17.4 5.3 15.3 3.5 12.8 3.5c-2.9 0-5.3 2.1-5.8 4.8C6.6 8.1 6.3 8 6 8c-2.8 0-5 2.2-5 5s2.2 5 5 5h12.5c2.5 0 4.5-2.1 4.5-4.5S21 7.5 18.5 7.5z"/></svg>') no-repeat; opacity: var(--cloud-opacity); z-index: -2; animation: floatClouds 50s linear infinite; transition: opacity 0.5s ease; }
+        body.light-mode .cloud { filter: brightness(0) invert(1); }
+        .cloud-1 { width: 200px; height: 150px; top: 15%; left: -200px; animation-duration: 70s; }
+        .cloud-2 { width: 300px; height: 200px; top: 40%; left: -300px; animation-duration: 90s; animation-delay: -20s;}
+        .cloud-3 { width: 150px; height: 100px; top: 75%; left: -150px; animation-duration: 60s; animation-delay: -10s;}
+
+        @keyframes floatClouds { from { transform: translateX(0); } to { transform: translateX(120vw); } }
+
+        .bird { position: fixed; width: 40px; height: 40px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%239dfc5d"><path d="M2 14s2.5-3.5 7-2c1.5.5 3.5.5 5 0 4.5-1.5 7 2 7 2s-1.5-3.5-5-3.5c-2.5 0-4.5.5-6 .5-1.5 0-3.5-.5-6-.5C4.5 10.5 2 14 2 14z"/></svg>') no-repeat center; opacity: var(--bird-opacity); z-index: -2; animation: flyBirds 20s linear infinite; transition: opacity 0.5s ease; }
+        body.light-mode .bird { filter: brightness(0) saturate(100%) invert(35%) sepia(97%) saturate(1476%) hue-rotate(186deg) brightness(97%) contrast(98%); }
+        .bird-1 { top: 20%; left: -50px; animation-duration: 25s; }
+        .bird-2 { top: 55%; left: -50px; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2300d2ff"><path d="M2 14s2.5-3.5 7-2c1.5.5 3.5.5 5 0 4.5-1.5 7 2 7 2s-1.5-3.5-5-3.5c-2.5 0-4.5.5-6 .5-1.5 0-3.5-.5-6-.5C4.5 10.5 2 14 2 14z"/></svg>'); animation-duration: 30s; animation-delay: 10s; transform: scale(0.8); }
+
+        @keyframes flyBirds { from { transform: translate(0, 0) scale(var(--s, 1)) rotate(-10deg); } to { transform: translate(120vw, -30vh) scale(var(--s, 1)) rotate(-10deg); } }
+
+        /* --- Header & Theme Toggle --- */
+        header { background: var(--header-bg); backdrop-filter: blur(15px); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); position: sticky; top: 0; z-index: 1000; transition: background 0.5s ease, border-color 0.5s ease; }
+        header img { height: 45px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
+
+        .theme-btn { background: transparent; border: 2px solid var(--g-cyan); color: var(--g-cyan); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; transition: all 0.3s ease; }
+        .theme-btn:hover { background: var(--g-cyan); color: var(--g-navy); box-shadow: 0 0 15px var(--g-cyan); }
+        body.light-mode .theme-btn { border-color: #0176d3; color: #0176d3; }
+        body.light-mode .theme-btn:hover { background: #0176d3; color: white; box-shadow: 0 0 15px rgba(1, 118, 211, 0.4); }
+
+        /* --- Core Layout & Fiber Optic Path --- */
+        .system-container { max-width: 1200px; margin: 0 auto; padding: 100px 20px; position: relative; }
+        .fiber-path-container { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); width: 300px; height: calc(100% - 150px); z-index: -1; pointer-events: none; }
+        .fiber-core { fill: none; stroke: var(--path-core); stroke-width: 4; transition: stroke 0.5s ease; }
+        .fiber-glow { fill: none; stroke: url(#neonGradient); stroke-width: 6; stroke-linecap: round; filter: drop-shadow(0 0 15px var(--g-green)); }
+
+        /* --- Layout Grids --- */
+        .node-row { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-bottom: 180px; align-items: center; perspective: 1000px; }
+        .node-row:nth-child(even) { direction: rtl; }
+        .node-row:nth-child(even) .node-content { direction: ltr; }
+
+        .holo-card { background: var(--card-bg); backdrop-filter: blur(20px); padding: 40px; border-radius: 24px; border: 1px solid var(--border-light); box-shadow: var(--shadow-card); position: relative; z-index: 2; transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease, border-color 0.5s ease; }
+        .holo-card:hover { transform: translateY(-8px) rotateX(1deg); box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
+
+        /* --- MODULAR UI SYSTEM (The "Buckets") --- */
+        h2.anim-title { font-size: 2rem; margin-bottom: 25px; color: var(--text-primary); font-weight: 800; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; transition: color 0.5s ease, border-color 0.5s ease; }
+        
+        .sub-module { background: var(--module-bg); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border-light); transition: background 0.5s ease, border-color 0.5s ease; }
+        .module-header { font-size: 1.1rem; font-weight: 700; color: var(--chip-text); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.5s ease;}
+        .module-desc { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 15px; transition: color 0.5s ease; }
+
+        .chip-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+        .tech-chip { background: var(--chip-bg); border: 1px solid var(--chip-border); color: var(--chip-text); padding: 8px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; transition: all 0.5s ease; }
+        .tech-chip:hover { background: var(--chip-border); }
+
+        .insight-panel { background: var(--insight-bg); border-left: 4px solid var(--insight-border); padding: 15px; border-radius: 0 8px 8px 0; font-size: 0.95rem; color: var(--outcome-text); font-weight: 600; margin-top: 15px; transition: all 0.5s ease; }
+
+        .pipeline-track { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; align-items: center;}
+        .pipe-node { background: var(--chip-text); color: var(--bg-color); padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; transition: all 0.5s ease;}
+        .pipe-divider { width: 15px; height: 2px; background: var(--border-light); transition: background 0.5s ease;}
+
+        .lifecycle-track { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; background: var(--module-bg); padding: 20px; border-radius: 12px; transition: background 0.5s ease;}
+        .lc-node { background: transparent; border: 2px solid var(--insight-border); color: var(--text-primary); padding: 10px 20px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; transition: all 0.5s ease;}
+        .lc-node.revenue { background: var(--insight-border); color: var(--bg-color); border: none; }
+
+        /* Abstract Visual Side */
+        .abstract-visual { display: flex; justify-content: center; align-items: center; height: 100%; }
+        .data-ring { width: 250px; height: 250px; border-radius: 50%; border: 2px dashed var(--ring-border); display: flex; justify-content: center; align-items: center; animation: spin 30s linear infinite; position: relative; transition: border-color 0.5s ease; }
+        .data-core { width: 120px; height: 120px; background: var(--core-bg); border: 2px solid var(--core-border); border-radius: 50%; box-shadow: 0 0 40px rgba(0, 210, 255, 0.2); display: flex; justify-content: center; align-items: center; font-size: 3rem; color: var(--core-icon); animation: pulse 4s ease-in-out infinite alternate; transition: background 0.5s ease, border-color 0.5s ease, color 0.5s ease; }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 100% { box-shadow: 0 0 60px rgba(157, 252, 93, 0.2); } }
+
+        /* --- Action Button --- */
+        .action-zone { text-align: center; margin: 100px 0; position: relative; z-index: 10; }
+        .cyber-btn { background: linear-gradient(90deg, var(--g-green), var(--g-cyan)); color: var(--g-navy); border: none; padding: 20px 50px; font-size: 1.2rem; font-weight: 900; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(157, 252, 93, 0.3); text-transform: uppercase; letter-spacing: 2px; }
+        body.light-mode .cyber-btn { background: linear-gradient(90deg, #0176d3, #00d2ff); color: white; box-shadow: 0 10px 30px rgba(1, 118, 211, 0.3); }
+        .cyber-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(0, 210, 255, 0.5); }
+    </style>
+</head>
+<body>
+
+<div class="ambient-sky"></div>
+<div class="cloud cloud-1"></div>
+<div class="cloud cloud-2"></div>
+<div class="cloud cloud-3"></div>
+<div class="bird bird-1" style="--s: 1;"></div>
+<div class="bird bird-2" style="--s: 0.8;"></div>
+
+<header>
+    <div style="background-color: white;padding: 10px;border-radius: 5px;"><img src="https://genufy.in/assets/logo-BPSpWWZL.png" alt="Genufy TechWorks Logo"><img src="https://genufy.in/assets/SF-img--0GxrHVB.png" style="margin-left: 10px;"></div>
+    <button class="theme-btn" id="themeToggle" title="Toggle Light/Dark Theme">
+        <i class="fas fa-sun"></i>
+    </button>
+</header>
+
+<div class="system-container">
+
+    <div class="fiber-path-container">
+        <svg viewBox="0 0 300 2400" preserveAspectRatio="none" style="width:100%; height:100%;">
+            <defs>
+                <linearGradient id="neonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#9dfc5d" />
+                    <stop offset="50%" stop-color="#00d2ff" />
+                    <stop offset="100%" stop-color="#9dfc5d" />
+                </linearGradient>
+            </defs>
+            <path class="fiber-core" d="M 150 0 C 280 150, 280 150, 150 300 C 20 450, 20 450, 150 600 C 280 750, 280 750, 150 900 C 20 1050, 20 1050, 150 1200 C 280 1350, 280 1350, 150 1500 C 20 1650, 20 1650, 150 1800 C 280 1950, 280 1950, 150 2100 C 20 2250, 20 2250, 150 2400" />
+            <path class="fiber-glow" id="animatedPath" d="M 150 0 C 280 150, 280 150, 150 300 C 20 450, 20 450, 150 600 C 280 750, 280 750, 150 900 C 20 1050, 20 1050, 150 1200 C 280 1350, 280 1350, 150 1500 C 20 1650, 20 1650, 150 1800 C 280 1950, 280 1950, 150 2100 C 20 2250, 20 2250, 150 2400" />
+        </svg>
+    </div>
+
+    <div class="node-row">
+        <div class="node-content">
+            <div class="holo-card">
+                <h2 class="anim-title">Lead Capture & Lead Management</h2>
+                
+                <div class="sub-module">
+                    <div class="module-header">Lead Capture</div>
+                    <div class="module-desc">Leads enter the system from multiple sources:</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Web-to-Lead Forms</span>
+                        <span class="tech-chip">Emails</span>
+                        <span class="tech-chip">Manual Entry</span>
+                        <span class="tech-chip">Marketing Cloud</span>
+                        <span class="tech-chip">AppExchange Integrations</span>
+                        <span class="tech-chip">Social Media & Events</span>
+                    </div>
+                    <div class="insight-panel">Centralized capture ensures no prospect is missed.</div>
+                </div>
+
+                <div class="sub-module">
+                    <div class="module-header">Lead Management</div>
+                    <div class="module-desc">Once captured, leads are managed through:</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Lead Scoring (priority-based ranking)</span>
+                        <span class="tech-chip">Auto Assignment Rules</span>
+                        <span class="tech-chip">Nurturing Campaigns</span>
+                        <span class="tech-chip">Tasks & Activities Tracking</span>
+                        <span class="tech-chip">Lead Status Monitoring</span>
+                        <span class="tech-chip">AI-based Lead Prioritization</span>
+                    </div>
+                    <div class="insight-panel">Goal: Identify high-quality leads and prepare them for conversion.</div>
+                </div>
+            </div>
+        </div>
+        <div class="abstract-visual">
+            <div class="data-ring"><div class="data-core" style="animation-delay: 0s;"><i class="fas fa-filter"></i></div></div>
+        </div>
+    </div>
+
+    <div class="node-row">
+        <div class="node-content">
+            <div class="holo-card">
+                <h2 class="anim-title">Lead Conversion & Opportunity Management</h2>
+                
+                <div class="sub-module">
+                    <div class="module-header">Lead Conversion</div>
+                    <div class="module-desc">Qualified leads are converted into:</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Account (Company)</span>
+                        <span class="tech-chip">Contact (Person)</span>
+                        <span class="tech-chip">Opportunity (Deal)</span>
+                    </div>
+                    <div class="insight-panel">This marks the start of the sales cycle.</div>
+                </div>
+
+                <div class="sub-module">
+                    <div class="module-header">Opportunity Management</div>
+                    <div class="module-desc">Sales pipeline stages:</div>
+                    <div class="pipeline-track">
+                        <span class="pipe-node">Prospecting</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Qualification</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Needs Analysis</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Value Proposition</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Proposal/Quote</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Negotiation</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Closed Won/Lost</span>
+                    </div>
+                </div>
+
+                <div class="sub-module">
+                    <div class="module-header">Product & Pricing Starts Here</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Add Products (Product Catalog / Pricebooks)</span>
+                        <span class="tech-chip">Select Standard or Custom Pricebook</span>
+                        <span class="tech-chip">Add Line Items (Quantity, List Price, Sales Price)</span>
+                        <span class="tech-chip">Apply Discounts & Adjustments</span>
+                    </div>
+                    <div class="insight-panel">Opportunity becomes revenue-focused at this stage.</div>
+                </div>
+            </div>
+        </div>
+        <div class="abstract-visual">
+            <div class="data-ring" style="animation-direction: reverse;"><div class="data-core" style="animation-delay: -1s;"><i class="fas fa-layer-group"></i></div></div>
+        </div>
+    </div>
+
+    <div class="node-row">
+        <div class="node-content">
+            <div class="holo-card">
+                <h2 class="anim-title"> Quotation & Pricing Control</h2>
+                
+                <div class="sub-module">
+                    <div class="module-header">Quote Creation</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Create Quote from Opportunity</span>
+                        <span class="tech-chip">Products auto-sync</span>
+                        <span class="tech-chip">Multiple Quote Versions</span>
+                    </div>
+                    <div class="module-desc" style="margin-top:10px;">Status:</div>
+                    <div class="pipeline-track">
+                        <span class="pipe-node">Draft</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Presented</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Approved</span>
+                    </div>
+                </div>
+
+                <div class="sub-module">
+                    <div class="module-header">Core Product & Pricing Features</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Quote Line Items (from Opportunity)</span>
+                        <span class="tech-chip">Pricing from Pricebook</span>
+                        <span class="tech-chip">Manual Discounts</span>
+                        <span class="tech-chip">Auto Subtotal & Grand Total Calculation</span>
+                        <span class="tech-chip">Generate PDF Proposal</span>
+                        <span class="tech-chip">Approval Process (Standard / Flow-based)</span>
+                        <span class="tech-chip">E-Signature (Custom Build)</span>
+                    </div>
+                    <div class="insight-panel">Ensures pricing accuracy and approval governance.</div>
+                </div>
+            </div>
+        </div>
+        <div class="abstract-visual">
+            <div class="data-ring"><div class="data-core" style="animation-delay: -2s;"><i class="fas fa-calculator"></i></div></div>
+        </div>
+    </div>
+
+    <div class="node-row">
+        <div class="node-content">
+            <div class="holo-card">
+                <h2 class="anim-title">Contract & Order Creation</h2>
+                
+                <div class="sub-module">
+                    <div class="module-header">Contract Signing</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Create Contract from Opportunity/Quote</span>
+                        <span class="tech-chip">Define Start/End Dates & Renewal Terms</span>
+                    </div>
+                    <div class="module-desc" style="margin-top:10px;">Status:</div>
+                    <div class="pipeline-track" style="margin-bottom: 20px;">
+                        <span class="pipe-node">Draft</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">In Approval</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Activated</span>
+                    </div>
+                    
+                    <div class="module-desc">Product & Pricing:</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Contract Line Items</span>
+                        <span class="tech-chip">Locked Pricing (from approved quote)</span>
+                    </div>
+                    <div class="insight-panel">Ensures agreed pricing consistency.</div>
+                </div>
+
+                <div class="sub-module">
+                    <div class="module-header">Order Creation</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Create Order from Contract/Quote/Opportunity</span>
+                        <span class="tech-chip">Order Products auto-populate</span>
+                    </div>
+                    <div class="module-desc" style="margin-top:10px;">Status:</div>
+                    <div class="pipeline-track" style="margin-bottom: 20px;">
+                        <span class="pipe-node">Draft</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Activated</span> <div class="pipe-divider"></div>
+                        <span class="pipe-node">Fulfilled</span>
+                    </div>
+
+                    <div class="module-desc">Product & Pricing:</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Pricing inherited from Contract</span>
+                        <span class="tech-chip">Inventory Management</span>
+                        <span class="tech-chip">Supports Amendments</span>
+                    </div>
+                    <div class="insight-panel">Moves deal from agreement to fulfillment.</div>
+                </div>
+            </div>
+        </div>
+        <div class="abstract-visual">
+            <div class="data-ring" style="animation-direction: reverse;"><div class="data-core" style="animation-delay: -3s;"><i class="fas fa-file-contract"></i></div></div>
+        </div>
+    </div>
+
+    <div class="node-row">
+        <div class="node-content">
+            <div class="holo-card">
+                <h2 class="anim-title">Order Management & Revenue Lifecycle</h2>
+                
+                <div class="sub-module">
+                    <div class="module-header">Order Management</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Fulfillment & Tracking</span>
+                        <span class="tech-chip">Amendments & Changes</span>
+                        <span class="tech-chip">Invoicing (if Billing enabled)</span>
+                        <span class="tech-chip">Returns & Cancellations</span>
+                    </div>
+                </div>
+
+                <div class="sub-module">
+                    <div class="module-header">Product & Pricing Governance</div>
+                    <div class="chip-container">
+                        <span class="tech-chip">Maintain pricing integrity across lifecycle</span>
+                        <span class="tech-chip">Mid-term adjustments via Amendments</span>
+                        <span class="tech-chip">Upsell / Cross-sell → Creates new Opportunity</span>
+                    </div>
+                </div>
+
+                <div class="module-header" style="text-align: center; margin-top: 40px;">Complete Lead-to-Revenue Lifecycle</div>
+                <div class="lifecycle-track">
+                    <div class="lc-node">Lead</div>
+                    <div class="lc-node">Opportunity</div>
+                    <div class="lc-node">Quote</div>
+                    <div class="lc-node">Contract</div>
+                    <div class="lc-node">Order</div>
+                    <div class="lc-node revenue">Revenue</div>
+                </div>
+            </div>
+        </div>
+        <div class="abstract-visual">
+            <div class="data-ring"><div class="data-core" style="animation-delay: -4s;"><i class="fas fa-sync"></i></div></div>
+        </div>
+    </div>
+
+    <div class="action-zone">
+        <button class="cyber-btn" >Contact Us</button>
+    </div>
+
+</div>
+
+<script>
+    // --- Light/Dark Theme Toggle Logic ---
+    const themeBtn = document.getElementById('themeToggle');
+    const icon = themeBtn.querySelector('i');
+
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        
+        if (document.body.classList.contains('light-mode')) {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        } else {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+    });
+
+    // --- GSAP Scroll Architecture ---
+    gsap.registerPlugin(ScrollTrigger);
+
+    const path = document.getElementById('animatedPath');
+    const pathLength = path.getTotalLength();
+    
+    gsap.set(path, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
+
+    gsap.to(path, {
+        strokeDashoffset: 0,
+        ease: "none",
+        scrollTrigger: {
+            trigger: ".system-container",
+            start: "top 25%",
+            end: "bottom 85%",
+            scrub: 1 
+        }
+    });
+
+    const rows = gsap.utils.toArray('.node-row');
+
+    rows.forEach((row) => {
+        const card = row.querySelector('.holo-card');
+        const title = row.querySelector('.anim-title');
+        const visual = row.querySelector('.abstract-visual');
+        
+        let tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: row,
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            }
+        });
+
+        tl.from(card, {
+            opacity: 0,
+            y: 100,
+            rotationX: -10,
+            transformPerspective: 1000,
+            duration: 0.8,
+            ease: "power3.out"
+        }, 0);
+
+        tl.from(title, {
+            opacity: 0,
+            x: -30,
+            duration: 0.6,
+            ease: "power2.out"
+        }, 0.2); 
+
+        tl.from(visual, {
+            opacity: 0,
+            scale: 0.5,
+            rotation: -45,
+            duration: 1,
+            ease: "back.out(1.5)"
+        }, 0.1);
+    });
+
+    // --- Cyber Confetti Particle System ---
+    const btn = document.getElementById('launchDemo');
+    
+    btn.addEventListener('click', () => {
+        btn.innerText = "System Activated...";
+        
+        const duration = 2500;
+        const end = Date.now() + duration;
+
+        (function frame() {
+            // Colors update based on current theme
+            const isLightMode = document.body.classList.contains('light-mode');
+            const colors = isLightMode ? ['#0176d3', '#ffffff', '#2e844a'] : ['#9dfc5d', '#00d2ff', '#ffffff'];
+            
+            confetti({
+                particleCount: 5,
+                angle: 60,
+                spread: 70,
+                origin: { x: 0 },
+                colors: colors,
+                shapes: ['square', 'circle']
+            });
+            confetti({
+                particleCount: 5,
+                angle: 120,
+                spread: 70,
+                origin: { x: 1 },
+                colors: colors,
+                shapes: ['square', 'circle']
+            });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            } else {
+                btn.innerText = "Initialize System Demo";
+            }
+        }());
+    });
+</script>
+
+</body>
+</html>

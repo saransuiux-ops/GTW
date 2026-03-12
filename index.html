@@ -6,21 +6,18 @@
     <title>Genufy TechWorks | Digital Revenue Architecture</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
-            /* Genufy Brand Palette */
             --g-navy: #0b0f19;
             --g-dark: #1a1a2e;
             --g-green: #9dfc5d;
             --g-cyan: #00d2ff;
             --g-white: #ffffff;
             
-            /* Dark Theme Variables (Default) */
             --bg-color: #0b0f19;
             --bg-grad: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #0b0f19 80%);
             --header-bg: rgba(11, 15, 25, 0.85);
@@ -33,7 +30,6 @@
             --cloud-opacity: 0.15;
             --bird-opacity: 0.4;
             
-            /* Modular UI Variables - Dark */
             --module-bg: rgba(0, 0, 0, 0.2);
             --chip-bg: rgba(0, 210, 255, 0.05);
             --chip-border: rgba(0, 210, 255, 0.3);
@@ -46,10 +42,11 @@
             --core-bg: radial-gradient(circle, #1a1a2e 0%, #0b0f19 100%);
             --core-border: #00d2ff;
             --core-icon: #9dfc5d;
+            --bar-sap: #ef4444;
+            --bar-sf: #00d2ff;
         }
 
         body.light-mode {
-            /* Light Theme Variables (Salesforce Inspired) */
             --bg-color: #eaf5fe;
             --bg-grad: linear-gradient(180deg, #cde3fc 0%, #eaf5fe 100%);
             --header-bg: rgba(255, 255, 255, 0.9);
@@ -62,7 +59,6 @@
             --cloud-opacity: 0.7;
             --bird-opacity: 0.6;
             
-            /* Modular UI Variables - Light */
             --module-bg: rgba(255, 255, 255, 0.5);
             --chip-bg: rgba(1, 118, 211, 0.05);
             --chip-border: rgba(1, 118, 211, 0.3);
@@ -75,6 +71,8 @@
             --core-bg: radial-gradient(circle, #ffffff 0%, #f4f6f9 100%);
             --core-border: #0176d3;
             --core-icon: #0176d3;
+            --bar-sap: #ef4444;
+            --bar-sf: #0176d3;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -87,7 +85,6 @@
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        /* --- Ambient Background --- */
         .ambient-sky { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg-grad); z-index: -3; transition: background 0.5s ease; }
 
         .cloud { position: fixed; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2300d2ff"><path d="M18.5 7.5c-0.2 0-0.4 0-0.5 0.1C17.4 5.3 15.3 3.5 12.8 3.5c-2.9 0-5.3 2.1-5.8 4.8C6.6 8.1 6.3 8 6 8c-2.8 0-5 2.2-5 5s2.2 5 5 5h12.5c2.5 0 4.5-2.1 4.5-4.5S21 7.5 18.5 7.5z"/></svg>') no-repeat; opacity: var(--cloud-opacity); z-index: -2; animation: floatClouds 50s linear infinite; transition: opacity 0.5s ease; }
@@ -105,7 +102,6 @@
 
         @keyframes flyBirds { from { transform: translate(0, 0) scale(var(--s, 1)) rotate(-10deg); } to { transform: translate(120vw, -30vh) scale(var(--s, 1)) rotate(-10deg); } }
 
-        /* --- Header & Theme Toggle --- */
         header { background: var(--header-bg); backdrop-filter: blur(15px); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); position: sticky; top: 0; z-index: 1000; transition: background 0.5s ease, border-color 0.5s ease; }
         header img { height: 45px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
 
@@ -114,26 +110,33 @@
         body.light-mode .theme-btn { border-color: #0176d3; color: #0176d3; }
         body.light-mode .theme-btn:hover { background: #0176d3; color: white; box-shadow: 0 0 15px rgba(1, 118, 211, 0.4); }
 
-        /* --- Core Layout & Fiber Optic Path --- */
-        .system-container { max-width: 1200px; margin: 0 auto; padding: 100px 20px; position: relative; }
-        .fiber-path-container { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); width: 300px; height: calc(100% - 150px); z-index: -1; pointer-events: none; }
-        .fiber-core { fill: none; stroke: var(--path-core); stroke-width: 4; transition: stroke 0.5s ease; }
-        .fiber-glow { fill: none; stroke: url(#neonGradient); stroke-width: 6; stroke-linecap: round; filter: drop-shadow(0 0 15px var(--g-green)); }
+        .system-container { max-width: 1400px; margin: 0 auto; padding: 40px 20px 100px; position: relative; }
+        
+        .top-action { display: flex; justify-content: center; margin-bottom: 40px; }
+        .toggle-btn { background: var(--card-bg); border: 2px solid var(--border-light); color: var(--text-primary); padding: 18px 40px; font-size: 1.2rem; font-weight: 800; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px); display: flex; align-items: center; gap: 15px; }
+        .toggle-btn:hover { border-color: var(--g-cyan); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2); }
+        body.light-mode .toggle-btn:hover { border-color: #0176d3; box-shadow: 0 10px 20px rgba(1, 118, 211, 0.2); }
+        .toggle-btn i { transition: transform 0.3s ease; }
+        .toggle-btn.active i { transform: rotate(180deg); }
 
-        /* --- Layout Grids --- */
-        .node-row { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-bottom: 180px; align-items: center; perspective: 1000px; }
+        #view-revenue { display: none; margin-bottom: 80px; position: relative; padding-top: 40px; border-bottom: 1px solid var(--border-light); padding-bottom: 80px; }
+        
+        .fiber-path-container { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 300px; height: calc(100% - 120px); z-index: -1; pointer-events: none; }
+        .fiber-core { fill: none; stroke: var(--path-core); stroke-width: 4; transition: stroke 0.5s ease; }
+        .fiber-glow { fill: none; stroke: url(#neonGradient1); stroke-width: 6; stroke-linecap: round; filter: drop-shadow(0 0 15px var(--g-green)); }
+
+        .node-row { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-bottom: 120px; align-items: center; perspective: 1000px; }
         .node-row:nth-child(even) { direction: rtl; }
         .node-row:nth-child(even) .node-content { direction: ltr; }
 
         .holo-card { background: var(--card-bg); backdrop-filter: blur(20px); padding: 40px; border-radius: 24px; border: 1px solid var(--border-light); box-shadow: var(--shadow-card); position: relative; z-index: 2; transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease, border-color 0.5s ease; }
         .holo-card:hover { transform: translateY(-8px) rotateX(1deg); box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
 
-        /* --- MODULAR UI SYSTEM (The "Buckets") --- */
         h2.anim-title { font-size: 2rem; margin-bottom: 25px; color: var(--text-primary); font-weight: 800; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; transition: color 0.5s ease, border-color 0.5s ease; }
         
         .sub-module { background: var(--module-bg); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border-light); transition: background 0.5s ease, border-color 0.5s ease; }
         .module-header { font-size: 1.1rem; font-weight: 700; color: var(--chip-text); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; transition: color 0.5s ease;}
-        .module-desc { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 15px; transition: color 0.5s ease; }
+        .module-desc { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 15px; transition: color 0.5s ease; line-height: 1.6; }
 
         .chip-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
         .tech-chip { background: var(--chip-bg); border: 1px solid var(--chip-border); color: var(--chip-text); padding: 8px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; transition: all 0.5s ease; }
@@ -149,7 +152,6 @@
         .lc-node { background: transparent; border: 2px solid var(--insight-border); color: var(--text-primary); padding: 10px 20px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; transition: all 0.5s ease;}
         .lc-node.revenue { background: var(--insight-border); color: var(--bg-color); border: none; }
 
-        /* Abstract Visual Side */
         .abstract-visual { display: flex; justify-content: center; align-items: center; height: 100%; }
         .data-ring { width: 250px; height: 250px; border-radius: 50%; border: 2px dashed var(--ring-border); display: flex; justify-content: center; align-items: center; animation: spin 30s linear infinite; position: relative; transition: border-color 0.5s ease; }
         .data-core { width: 120px; height: 120px; background: var(--core-bg); border: 2px solid var(--core-border); border-radius: 50%; box-shadow: 0 0 40px rgba(0, 210, 255, 0.2); display: flex; justify-content: center; align-items: center; font-size: 3rem; color: var(--core-icon); animation: pulse 4s ease-in-out infinite alternate; transition: background 0.5s ease, border-color 0.5s ease, color 0.5s ease; }
@@ -157,9 +159,69 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulse { 100% { box-shadow: 0 0 60px rgba(157, 252, 93, 0.2); } }
 
-        /* --- Action Button --- */
-        .action-zone { text-align: center; margin: 100px 0; position: relative; z-index: 10; }
-        .cyber-btn { background: linear-gradient(90deg, var(--g-green), var(--g-cyan)); color: var(--g-navy); border: none; padding: 20px 50px; font-size: 1.2rem; font-weight: 900; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(157, 252, 93, 0.3); text-transform: uppercase; letter-spacing: 2px; }
+        .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; auto-rows: minmax(200px, auto); margin-top: 40px; }
+        .bento-item { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 24px; padding: 35px; backdrop-filter: blur(20px); box-shadow: var(--shadow-card); transition: transform 0.4s ease, border-color 0.4s ease; display: flex; flex-direction: column; }
+        .bento-item:hover { transform: translateY(-5px); border-color: var(--g-cyan); }
+        body.light-mode .bento-item:hover { border-color: #0176d3; }
+        
+        .col-span-2 { grid-column: span 2; }
+        .col-span-3 { grid-column: span 3; }
+        .col-span-4 { grid-column: span 4; }
+        .row-span-2 { grid-row: span 2; }
+        
+        @media (max-width: 1024px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .col-span-3, .col-span-4 { grid-column: span 2; }
+        }
+        @media (max-width: 768px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .col-span-2, .col-span-3, .col-span-4 { grid-column: span 1; }
+            .row-span-2 { grid-row: span 1; }
+        }
+
+        .bento-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+        .bento-title i { color: var(--g-cyan); }
+        body.light-mode .bento-title i { color: #0176d3; }
+
+        .hero-bento { text-align: center; justify-content: center; align-items: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(26,26,46,0.8) 0%, rgba(11,15,25,0.9) 100%); border: 1px solid var(--g-cyan); }
+        body.light-mode .hero-bento { background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(244,246,249,0.9) 100%); border: 1px solid #0176d3; }
+        .hero-title { font-size: 3.5rem; margin-bottom: 10px; font-weight: 900; line-height: 1.2; }
+        .hero-title .highlight { background: linear-gradient(90deg, var(--g-green), var(--g-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body.light-mode .hero-title .highlight { background: linear-gradient(90deg, #2e844a, #0176d3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .challenge-list { display: flex; flex-direction: column; gap: 15px; }
+        .challenge-item { padding: 15px; background: var(--module-bg); border-left: 4px solid #ef4444; border-radius: 0 8px 8px 0; }
+        .challenge-header { font-weight: 700; margin-bottom: 5px; color: var(--text-primary); }
+
+        .chart-row { margin-bottom: 20px; }
+        .chart-label { font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+        .chart-bar-container { display: flex; height: 35px; border-radius: 8px; overflow: hidden; background: var(--module-bg); border: 1px solid var(--border-light); }
+        .chart-bar { display: flex; align-items: center; padding: 0 15px; font-weight: 800; color: white; transition: width 1s ease-out; }
+        .chart-bar.sap { background: var(--bar-sap); }
+        .chart-bar.sf { background: var(--bar-sf); }
+
+        .comparison-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-light); }
+        .comparison-table th { color: var(--chip-text); font-size: 1.05rem; }
+        .comparison-table tr:hover { background: var(--module-bg); }
+        .comparison-table td:first-child { font-weight: bold; }
+
+        .roadmap-flex { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; }
+        .roadmap-step { flex: 1; min-width: 150px; background: var(--module-bg); padding: 15px; border-radius: 12px; border-top: 3px solid var(--g-cyan); position: relative; }
+        body.light-mode .roadmap-step { border-top-color: #0176d3; }
+        .step-num { font-size: 0.8rem; font-weight: 800; color: var(--g-cyan); margin-bottom: 5px; text-transform: uppercase; }
+        body.light-mode .step-num { color: #0176d3; }
+        .step-title { font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+        
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .stat-box { text-align: center; padding: 20px; background: var(--module-bg); border-radius: 12px; }
+        .stat-num { font-size: 2.5rem; font-weight: 900; color: var(--g-cyan); line-height: 1; margin-bottom: 5px; }
+        body.light-mode .stat-num { color: #0176d3; }
+        
+        .cta-bento { background: linear-gradient(45deg, rgba(157, 252, 93, 0.1), rgba(0, 210, 255, 0.1)); border: 1px solid var(--g-cyan); text-align: center; justify-content: center; align-items: center; }
+        body.light-mode .cta-bento { background: linear-gradient(45deg, rgba(46, 132, 74, 0.1), rgba(1, 118, 211, 0.1)); border-color: #0176d3; }
+        
+        .cyber-btn { background: linear-gradient(90deg, var(--g-green), var(--g-cyan)); color: var(--g-navy); border: none; padding: 20px 50px; font-size: 1.2rem; font-weight: 900; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(157, 252, 93, 0.3); text-transform: uppercase; letter-spacing: 2px; margin-top: 20px; }
         body.light-mode .cyber-btn { background: linear-gradient(90deg, #0176d3, #00d2ff); color: white; box-shadow: 0 10px 30px rgba(1, 118, 211, 0.3); }
         .cyber-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(0, 210, 255, 0.5); }
     </style>
@@ -182,247 +244,333 @@
 
 <div class="system-container">
 
-    <div class="fiber-path-container">
-        <svg viewBox="0 0 300 2400" preserveAspectRatio="none" style="width:100%; height:100%;">
-            <defs>
-                <linearGradient id="neonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="#9dfc5d" />
-                    <stop offset="50%" stop-color="#00d2ff" />
-                    <stop offset="100%" stop-color="#9dfc5d" />
-                </linearGradient>
-            </defs>
-            <path class="fiber-core" d="M 150 0 C 280 150, 280 150, 150 300 C 20 450, 20 450, 150 600 C 280 750, 280 750, 150 900 C 20 1050, 20 1050, 150 1200 C 280 1350, 280 1350, 150 1500 C 20 1650, 20 1650, 150 1800 C 280 1950, 280 1950, 150 2100 C 20 2250, 20 2250, 150 2400" />
-            <path class="fiber-glow" id="animatedPath" d="M 150 0 C 280 150, 280 150, 150 300 C 20 450, 20 450, 150 600 C 280 750, 280 750, 150 900 C 20 1050, 20 1050, 150 1200 C 280 1350, 280 1350, 150 1500 C 20 1650, 20 1650, 150 1800 C 280 1950, 280 1950, 150 2100 C 20 2250, 20 2250, 150 2400" />
-        </svg>
+    <div class="top-action">
+        <button class="toggle-btn" id="toggleRevBtn">
+            View Lead to Revenue Lifecycle <i class="fas fa-chevron-down"></i>
+        </button>
     </div>
 
-    <div class="node-row">
-        <div class="node-content">
-            <div class="holo-card">
-                <h2 class="anim-title">Lead Capture & Lead Management</h2>
-                
-                <div class="sub-module">
-                    <div class="module-header">Lead Capture</div>
-                    <div class="module-desc">Leads enter the system from multiple sources:</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Web-to-Lead Forms</span>
-                        <span class="tech-chip">Emails</span>
-                        <span class="tech-chip">Manual Entry</span>
-                        <span class="tech-chip">Marketing Cloud</span>
-                        <span class="tech-chip">AppExchange Integrations</span>
-                        <span class="tech-chip">Social Media & Events</span>
-                    </div>
-                    <div class="insight-panel">Centralized capture ensures no prospect is missed.</div>
-                </div>
+    <div id="view-revenue">
+        <div class="fiber-path-container">
+            <svg viewBox="0 0 300 2400" preserveAspectRatio="none" style="width:100%; height:100%;">
+                <defs>
+                    <linearGradient id="neonGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#9dfc5d" />
+                        <stop offset="50%" stop-color="#00d2ff" />
+                        <stop offset="100%" stop-color="#9dfc5d" />
+                    </linearGradient>
+                </defs>
+                <path class="fiber-core" d="M 150 0 C 280 150, 280 150, 150 300 C 20 450, 20 450, 150 600 C 280 750, 280 750, 150 900 C 20 1050, 20 1050, 150 1200 C 280 1350, 280 1350, 150 1500 C 20 1650, 20 1650, 150 1800 C 280 1950, 280 1950, 150 2100 C 20 2250, 20 2250, 150 2400" />
+                <path class="fiber-glow anim-path" d="M 150 0 C 280 150, 280 150, 150 300 C 20 450, 20 450, 150 600 C 280 750, 280 750, 150 900 C 20 1050, 20 1050, 150 1200 C 280 1350, 280 1350, 150 1500 C 20 1650, 20 1650, 150 1800 C 280 1950, 280 1950, 150 2100 C 20 2250, 20 2250, 150 2400" />
+            </svg>
+        </div>
 
-                <div class="sub-module">
-                    <div class="module-header">Lead Management</div>
-                    <div class="module-desc">Once captured, leads are managed through:</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Lead Scoring (priority-based ranking)</span>
-                        <span class="tech-chip">Auto Assignment Rules</span>
-                        <span class="tech-chip">Nurturing Campaigns</span>
-                        <span class="tech-chip">Tasks & Activities Tracking</span>
-                        <span class="tech-chip">Lead Status Monitoring</span>
+        <div class="node-row rev-node">
+            <div class="node-content">
+                <div class="holo-card">
+                    <h2 class="anim-title">Lead Capture & Lead Management</h2>
+                    <div class="sub-module">
+                        <div class="module-header">Lead Capture</div>
+                        <div class="module-desc">Leads enter the system from multiple sources:</div>
+                        <div class="chip-container">
+                            <span class="tech-chip">Web-to-Lead Forms</span>
+                            <span class="tech-chip">Emails</span>
+                            <span class="tech-chip">Manual Entry</span>
+                            <span class="tech-chip">Marketing Cloud</span>
+                            <span class="tech-chip">AppExchange Integrations</span>
+                            <span class="tech-chip">Social Media & Events</span>
+                        </div>
+                        <div class="insight-panel">Centralized capture ensures no prospect is missed.</div>
                     </div>
-                    <div class="insight-panel">Goal: Identify high-quality leads and prepare them for conversion.</div>
+                    <div class="sub-module">
+                        <div class="module-header">Lead Management</div>
+                        <div class="module-desc">Once captured, leads are managed through:</div>
+                        <div class="chip-container">
+                            <span class="tech-chip">Lead Scoring</span>
+                            <span class="tech-chip">Auto Assignment Rules</span>
+                            <span class="tech-chip">Nurturing Campaigns</span>
+                            <span class="tech-chip">Tasks & Activities Tracking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="abstract-visual">
+                <div class="data-ring"><div class="data-core" style="animation-delay: 0s;"><i class="fas fa-filter"></i></div></div>
+            </div>
+        </div>
+
+        <div class="node-row rev-node">
+            <div class="node-content">
+                <div class="holo-card">
+                    <h2 class="anim-title">Lead Conversion & Opportunity Management</h2>
+                    <div class="sub-module">
+                        <div class="module-header">Opportunity Management</div>
+                        <div class="module-desc">Sales pipeline stages:</div>
+                        <div class="pipeline-track">
+                            <span class="pipe-node">Prospecting</span> <div class="pipe-divider"></div>
+                            <span class="pipe-node">Qualification</span> <div class="pipe-divider"></div>
+                            <span class="pipe-node">Needs Analysis</span> <div class="pipe-divider"></div>
+                            <span class="pipe-node">Value Proposition</span> <div class="pipe-divider"></div>
+                            <span class="pipe-node">Proposal/Quote</span> <div class="pipe-divider"></div>
+                            <span class="pipe-node">Negotiation</span> <div class="pipe-divider"></div>
+                            <span class="pipe-node">Closed Won</span>
+                        </div>
+                    </div>
+                    <div class="sub-module">
+                        <div class="module-header">Product & Pricing Starts Here</div>
+                        <div class="chip-container">
+                            <span class="tech-chip">Add Products (Pricebooks)</span>
+                            <span class="tech-chip">Add Line Items</span>
+                            <span class="tech-chip">Apply Discounts</span>
+                        </div>
+                        <div class="insight-panel">Opportunity becomes revenue-focused at this stage.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="abstract-visual">
+                <div class="data-ring" style="animation-direction: reverse;"><div class="data-core" style="animation-delay: -1s;"><i class="fas fa-layer-group"></i></div></div>
+            </div>
+        </div>
+
+        <div class="node-row rev-node">
+            <div class="node-content">
+                <div class="holo-card">
+                    <h2 class="anim-title">Quotation & Pricing Control</h2>
+                    <div class="sub-module">
+                        <div class="module-header">Core Product & Pricing Features</div>
+                        <div class="chip-container">
+                            <span class="tech-chip">Quote Line Items</span>
+                            <span class="tech-chip">Pricing from Pricebook</span>
+                            <span class="tech-chip">Manual Discounts</span>
+                            <span class="tech-chip">Auto Subtotal Calculation</span>
+                            <span class="tech-chip">Generate PDF Proposal</span>
+                            <span class="tech-chip">Approval Process</span>
+                        </div>
+                        <div class="insight-panel">Ensures pricing accuracy and approval governance.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="abstract-visual">
+                <div class="data-ring"><div class="data-core" style="animation-delay: -2s;"><i class="fas fa-calculator"></i></div></div>
+            </div>
+        </div>
+
+        <div class="node-row rev-node">
+            <div class="node-content">
+                <div class="holo-card">
+                    <h2 class="anim-title">Contract & Order Creation</h2>
+                    <div class="sub-module">
+                        <div class="module-header">Order Creation</div>
+                        <div class="chip-container">
+                            <span class="tech-chip">Create Order from Contract/Quote</span>
+                            <span class="tech-chip">Pricing inherited from Contract</span>
+                            <span class="tech-chip">Inventory Management</span>
+                        </div>
+                        <div class="insight-panel">Moves deal from agreement to fulfillment.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="abstract-visual">
+                <div class="data-ring" style="animation-direction: reverse;"><div class="data-core" style="animation-delay: -3s;"><i class="fas fa-file-contract"></i></div></div>
+            </div>
+        </div>
+
+        <div class="node-row rev-node" style="margin-bottom: 0;">
+            <div class="node-content">
+                <div class="holo-card">
+                    <h2 class="anim-title">Order Management & Revenue Lifecycle</h2>
+                    <div class="module-header" style="text-align: center; margin-top: 20px;">Complete Lead-to-Revenue Lifecycle</div>
+                    <div class="lifecycle-track">
+                        <div class="lc-node">Lead</div>
+                        <div class="lc-node">Opportunity</div>
+                        <div class="lc-node">Quote</div>
+                        <div class="lc-node">Contract</div>
+                        <div class="lc-node">Order</div>
+                        <div class="lc-node revenue">Revenue</div>
+                    </div>
+                </div>
+            </div>
+            <div class="abstract-visual">
+                <div class="data-ring"><div class="data-core" style="animation-delay: -4s;"><i class="fas fa-sync"></i></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-migration" class="bento-grid">
+        
+        <div class="bento-item col-span-4 hero-bento bento-anim">
+            <div class="tech-chip" style="display: inline-block; margin-bottom: 15px;">Migration Proposal</div>
+            <div class="hero-title">SAP <i class="fas fa-arrow-right" style="color: var(--text-secondary); margin: 0 10px; font-size: 2.5rem;"></i> <span class="highlight">Salesforce</span></div>
+            <div class="module-desc" style="font-size: 1.4rem; max-width: 800px; margin: 0 auto 20px;">Your Path to a Modern, Cost-Effective CRM & Business Platform</div>
+            <div class="chip-container" style="justify-content: center;">
+                <span class="tech-chip" style="border-color: var(--g-cyan);">COST</span>
+                <span class="tech-chip" style="border-color: var(--g-cyan);">EFFICIENCY</span>
+                <span class="tech-chip" style="border-color: var(--g-cyan);">GROWTH</span>
+            </div>
+        </div>
+
+        <div class="bento-item col-span-2 row-span-2 bento-anim">
+            <div class="bento-title"><i class="fas fa-exclamation-triangle"></i> The Challenge with SAP</div>
+            <div class="challenge-list">
+                <div class="challenge-item">
+                    <div class="challenge-header">High Total Cost</div>
+                    <div class="module-desc" style="margin-bottom:0;">Licensing, infrastructure, and maintenance consume 20–30% of IT budgets.</div>
+                </div>
+                <div class="challenge-item">
+                    <div class="challenge-header">Complex Customization</div>
+                    <div class="module-desc" style="margin-bottom:0;">Heavy customizations require expensive ABAP developers. High risk during updates.</div>
+                </div>
+                <div class="challenge-item">
+                    <div class="challenge-header">Poor User Adoption</div>
+                    <div class="module-desc" style="margin-bottom:0;">Steep learning curve frustrates users, leading to shadow systems.</div>
+                </div>
+                <div class="challenge-item">
+                    <div class="challenge-header">Rigid & Slow to Scale</div>
+                    <div class="module-desc" style="margin-bottom:0;">On-premise architecture makes scaling hard. Modules take months to deploy.</div>
                 </div>
             </div>
         </div>
-        <div class="abstract-visual">
-            <div class="data-ring"><div class="data-core" style="animation-delay: 0s;"><i class="fas fa-filter"></i></div></div>
-        </div>
-    </div>
 
-    <div class="node-row">
-        <div class="node-content">
-            <div class="holo-card">
-                <h2 class="anim-title">Lead Conversion & Opportunity Management</h2>
-                
-                <div class="sub-module">
-                    <div class="module-header">Lead Conversion</div>
-                    <div class="module-desc">Qualified leads are converted into:</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Account (Company)</span>
-                        <span class="tech-chip">Contact (Person)</span>
-                        <span class="tech-chip">Opportunity (Deal)</span>
-                    </div>
-                    <div class="insight-panel">This marks the start of the sales cycle.</div>
+        <div class="bento-item col-span-2 bento-anim">
+            <div class="bento-title"><i class="fas fa-chart-bar"></i> Total Cost of Ownership (3-Year)</div>
+            <div class="chart-row">
+                <div class="chart-label">Year 1</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar sap" style="width: 85%;">SAP: $850K</div>
+                    <div class="chart-bar sf" style="width: 42%;">SF: $420K</div>
                 </div>
-
-                <div class="sub-module">
-                    <div class="module-header">Opportunity Management</div>
-                    <div class="module-desc">Sales pipeline stages:</div>
-                    <div class="pipeline-track">
-                        <span class="pipe-node">Prospecting</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Qualification</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Needs Analysis</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Value Proposition</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Proposal/Quote</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Negotiation</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Closed Won/Lost</span>
-                    </div>
+            </div>
+            <div class="chart-row">
+                <div class="chart-label">Year 2</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar sap" style="width: 62%;">SAP: $620K</div>
+                    <div class="chart-bar sf" style="width: 31%;">SF: $310K</div>
                 </div>
-
-                <div class="sub-module">
-                    <div class="module-header">Product & Pricing Starts Here</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Add Products (Product Catalog / Pricebooks)</span>
-                        <span class="tech-chip">Select Standard or Custom Pricebook</span>
-                        <span class="tech-chip">Add Line Items (Quantity, List Price, Sales Price)</span>
-                        <span class="tech-chip">Apply Discounts & Adjustments</span>
-                    </div>
-                    <div class="insight-panel">Opportunity becomes revenue-focused at this stage.</div>
+            </div>
+            <div class="chart-row" style="margin-bottom:0;">
+                <div class="chart-label">Year 3</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar sap" style="width: 58%;">SAP: $580K</div>
+                    <div class="chart-bar sf" style="width: 29%;">SF: $290K</div>
                 </div>
             </div>
         </div>
-        <div class="abstract-visual">
-            <div class="data-ring" style="animation-direction: reverse;"><div class="data-core" style="animation-delay: -1s;"><i class="fas fa-layer-group"></i></div></div>
-        </div>
-    </div>
 
-    <div class="node-row">
-        <div class="node-content">
-            <div class="holo-card">
-                <h2 class="anim-title"> Quotation & Pricing Control</h2>
-                
-                <div class="sub-module">
-                    <div class="module-header">Quote Creation</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Create Quote from Opportunity</span>
-                        <span class="tech-chip">Products auto-sync</span>
-                        <span class="tech-chip">Multiple Quote Versions</span>
-                    </div>
-                    <div class="module-desc" style="margin-top:10px;">Status:</div>
-                    <div class="pipeline-track">
-                        <span class="pipe-node">Draft</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Presented</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Approved</span>
-                    </div>
+        <div class="bento-item col-span-2 bento-anim">
+            <div class="bento-title"><i class="fas fa-bolt"></i> Business Impact</div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-num">40%</div>
+                    <div class="module-desc" style="margin-bottom:0; font-weight:bold;">Avg. Cost Saving</div>
                 </div>
-
-                <div class="sub-module">
-                    <div class="module-header">Core Product & Pricing Features</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Quote Line Items (from Opportunity)</span>
-                        <span class="tech-chip">Pricing from Pricebook</span>
-                        <span class="tech-chip">Manual Discounts</span>
-                        <span class="tech-chip">Auto Subtotal & Grand Total Calculation</span>
-                        <span class="tech-chip">Generate PDF Proposal</span>
-                        <span class="tech-chip">Approval Process (Standard / Flow-based)</span>
-                        <span class="tech-chip">E-Signature (Custom Build)</span>
-                    </div>
-                    <div class="insight-panel">Ensures pricing accuracy and approval governance.</div>
+                <div class="stat-box">
+                    <div class="stat-num">30%</div>
+                    <div class="module-desc" style="margin-bottom:0; font-weight:bold;">Productivity Gains</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num">60%</div>
+                    <div class="module-desc" style="margin-bottom:0; font-weight:bold;">IT Reduction</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num">18<span style="font-size: 1rem;">mo</span></div>
+                    <div class="module-desc" style="margin-bottom:0; font-weight:bold;">Payback Period</div>
                 </div>
             </div>
         </div>
-        <div class="abstract-visual">
-            <div class="data-ring"><div class="data-core" style="animation-delay: -2s;"><i class="fas fa-calculator"></i></div></div>
+
+        <div class="bento-item col-span-4 bento-anim" style="overflow-x: auto;">
+            <div class="bento-title"><i class="fas fa-balance-scale"></i> SAP vs Salesforce Head to Head</div>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th style="color: #ef4444;">SAP</th>
+                        <th style="color: var(--g-cyan);">Salesforce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Deployment</td><td>On-Premise / Complex Cloud</td><td>100% Native Cloud</td></tr>
+                    <tr><td>Implementation</td><td>12–24 months</td><td>3–6 months</td></tr>
+                    <tr><td>Customization</td><td>ABAP (scarce, expensive)</td><td>Low-code / No-code tools</td></tr>
+                    <tr><td>User Experience</td><td>Complex, steep learning</td><td>Intuitive, modern UI</td></tr>
+                    <tr><td>AI / Analytics</td><td>Bolt-on, additional cost</td><td>Built-in Einstein AI</td></tr>
+                </tbody>
+            </table>
         </div>
-    </div>
 
-    <div class="node-row">
-        <div class="node-content">
-            <div class="holo-card">
-                <h2 class="anim-title">Contract & Order Creation</h2>
-                
-                <div class="sub-module">
-                    <div class="module-header">Contract Signing</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Create Contract from Opportunity/Quote</span>
-                        <span class="tech-chip">Define Start/End Dates & Renewal Terms</span>
-                    </div>
-                    <div class="module-desc" style="margin-top:10px;">Status:</div>
-                    <div class="pipeline-track" style="margin-bottom: 20px;">
-                        <span class="pipe-node">Draft</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">In Approval</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Activated</span>
-                    </div>
-                    
-                    <div class="module-desc">Product & Pricing:</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Contract Line Items</span>
-                        <span class="tech-chip">Locked Pricing (from approved quote)</span>
-                    </div>
-                    <div class="insight-panel">Ensures agreed pricing consistency.</div>
+        <div class="bento-item col-span-4 bento-anim">
+            <div class="bento-title"><i class="fas fa-route"></i> Migration Roadmap (12-16 Weeks)</div>
+            <div class="roadmap-flex">
+                <div class="roadmap-step">
+                    <div class="step-num">Weeks 1-2</div>
+                    <div class="step-title">Discovery</div>
+                    <div class="module-desc" style="font-size: 0.85rem; margin:0;">Map architecture, define requirements, risk audit.</div>
                 </div>
-
-                <div class="sub-module">
-                    <div class="module-header">Order Creation</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Create Order from Contract/Quote/Opportunity</span>
-                        <span class="tech-chip">Order Products auto-populate</span>
-                    </div>
-                    <div class="module-desc" style="margin-top:10px;">Status:</div>
-                    <div class="pipeline-track" style="margin-bottom: 20px;">
-                        <span class="pipe-node">Draft</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Activated</span> <div class="pipe-divider"></div>
-                        <span class="pipe-node">Fulfilled</span>
-                    </div>
-
-                    <div class="module-desc">Product & Pricing:</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Pricing inherited from Contract</span>
-                        <span class="tech-chip">Inventory Management</span>
-                        <span class="tech-chip">Supports Amendments</span>
-                    </div>
-                    <div class="insight-panel">Moves deal from agreement to fulfillment.</div>
+                <div class="roadmap-step">
+                    <div class="step-num">Weeks 3-4</div>
+                    <div class="step-title">Design</div>
+                    <div class="module-desc" style="font-size: 0.85rem; margin:0;">Org design, data strategy, change management.</div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">Weeks 5-10</div>
+                    <div class="step-title">Build</div>
+                    <div class="module-desc" style="font-size: 0.85rem; margin:0;">Configure modules, migrate data, integrations.</div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">Weeks 11-12</div>
+                    <div class="step-title">Test & Train</div>
+                    <div class="module-desc" style="font-size: 0.85rem; margin:0;">UAT testing, training, parallel run.</div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">Week 13+</div>
+                    <div class="step-title">Go Live</div>
+                    <div class="module-desc" style="font-size: 0.85rem; margin:0;">Cutover, hypercare support, decommission.</div>
                 </div>
             </div>
         </div>
-        <div class="abstract-visual">
-            <div class="data-ring" style="animation-direction: reverse;"><div class="data-core" style="animation-delay: -3s;"><i class="fas fa-file-contract"></i></div></div>
+
+        <div class="bento-item col-span-2 bento-anim">
+            <div class="bento-title"><i class="fas fa-star"></i> Why Salesforce</div>
+            <div class="chip-container">
+                <span class="tech-chip">True Cloud Platform</span>
+                <span class="tech-chip">Faster Time-to-Value</span>
+                <span class="tech-chip">Einstein AI Built-In</span>
+                <span class="tech-chip">Mobile-First Design</span>
+                <span class="tech-chip">Enterprise-Grade Security</span>
+                <span class="tech-chip">1000+ AppExchange Apps</span>
+            </div>
+            <div class="insight-panel" style="margin-top:auto;">Go live in weeks, not years. Access from anywhere.</div>
         </div>
-    </div>
 
-    <div class="node-row">
-        <div class="node-content">
-            <div class="holo-card">
-                <h2 class="anim-title">Order Management & Revenue Lifecycle</h2>
-                
-                <div class="sub-module">
-                    <div class="module-header">Order Management</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Fulfillment & Tracking</span>
-                        <span class="tech-chip">Amendments & Changes</span>
-                        <span class="tech-chip">Invoicing (if Billing enabled)</span>
-                        <span class="tech-chip">Returns & Cancellations</span>
-                    </div>
+        <div class="bento-item col-span-2 bento-anim">
+            <div class="bento-title"><i class="fas fa-handshake"></i> Why Partner With Us</div>
+            <div class="challenge-list" style="gap: 10px;">
+                <div class="challenge-item" style="border-left-color: var(--g-green); padding: 10px 15px;">
+                    <div class="challenge-header" style="font-size: 0.95rem;">Certified Salesforce Partner</div>
+                    <div class="module-desc" style="font-size: 0.85rem; margin:0;">50+ certifications across multiple clouds.</div>
                 </div>
-
-                <div class="sub-module">
-                    <div class="module-header">Product & Pricing Governance</div>
-                    <div class="chip-container">
-                        <span class="tech-chip">Maintain pricing integrity across lifecycle</span>
-                        <span class="tech-chip">Mid-term adjustments via Amendments</span>
-                        <span class="tech-chip">Upsell / Cross-sell → Creates new Opportunity</span>
-                    </div>
+                <div class="challenge-item" style="border-left-color: var(--g-green); padding: 10px 15px;">
+                    <div class="challenge-header" style="font-size: 0.95rem;">SAP Migration Specialists</div>
+                    <div class="module-desc" style="font-size: 0.85rem; margin:0;">Deep expertise in SAP data & ABAP.</div>
                 </div>
-
-                <div class="module-header" style="text-align: center; margin-top: 40px;">Complete Lead-to-Revenue Lifecycle</div>
-                <div class="lifecycle-track">
-                    <div class="lc-node">Lead</div>
-                    <div class="lc-node">Opportunity</div>
-                    <div class="lc-node">Quote</div>
-                    <div class="lc-node">Contract</div>
-                    <div class="lc-node">Order</div>
-                    <div class="lc-node revenue">Revenue</div>
+                <div class="challenge-item" style="border-left-color: var(--g-green); padding: 10px 15px;">
+                    <div class="challenge-header" style="font-size: 0.95rem;">End-to-End Ownership</div>
+                    <div class="module-desc" style="font-size: 0.85rem; margin:0;">Architecture, migration, training, support.</div>
                 </div>
             </div>
         </div>
-        <div class="abstract-visual">
-            <div class="data-ring"><div class="data-core" style="animation-delay: -4s;"><i class="fas fa-sync"></i></div></div>
-        </div>
-    </div>
 
-    <div class="action-zone">
-        <button class="cyber-btn" >Contact Us</button>
+        <div class="bento-item col-span-4 cta-bento bento-anim" style="padding: 50px 20px;">
+            <div class="hero-title" style="font-size: 2.5rem;">Ready to Make the Move?</div>
+            <div class="module-desc" style="font-size: 1.2rem; max-width: 600px; margin: 0 auto 20px;">Get a free SAP Audit, Custom Migration Roadmap, and Pilot Proof of Concept.</div>
+            <button class="cyber-btn trigger-confetti">Schedule Free Discovery Call <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+        </div>
+
     </div>
 
 </div>
 
 <script>
-    // --- Light/Dark Theme Toggle Logic ---
     const themeBtn = document.getElementById('themeToggle');
     const icon = themeBtn.querySelector('i');
 
@@ -438,102 +586,149 @@
         }
     });
 
-    // --- GSAP Scroll Architecture ---
     gsap.registerPlugin(ScrollTrigger);
 
-    const path = document.getElementById('animatedPath');
-    const pathLength = path.getTotalLength();
-    
-    gsap.set(path, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
+    function initRevAnimations() {
+        const path = document.querySelector('.anim-path');
+        const rows = document.querySelectorAll('.rev-node');
 
-    gsap.to(path, {
-        strokeDashoffset: 0,
-        ease: "none",
-        scrollTrigger: {
-            trigger: ".system-container",
-            start: "top 25%",
-            end: "bottom 85%",
-            scrub: 1 
+        if (path) {
+            const pathLength = path.getTotalLength();
+            gsap.set(path, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
+
+            gsap.to(path, {
+                strokeDashoffset: 0,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "#view-revenue",
+                    start: "top 20%",
+                    end: "bottom 80%",
+                    scrub: 1 
+                }
+            });
+        }
+
+        rows.forEach((row) => {
+            const card = row.querySelector('.holo-card');
+            const visual = row.querySelector('.abstract-visual');
+            
+            let tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: row,
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+
+            tl.fromTo(card, {
+                opacity: 0,
+                y: 50,
+                rotationX: -5,
+                transformPerspective: 1000
+            }, {
+                opacity: 1,
+                y: 0,
+                rotationX: 0,
+                duration: 0.6,
+                ease: "power2.out"
+            }, 0);
+
+            if (visual) {
+                tl.fromTo(visual, {
+                    opacity: 0,
+                    scale: 0.8,
+                    rotation: -20
+                }, {
+                    opacity: 1,
+                    scale: 1,
+                    rotation: 0,
+                    duration: 0.8,
+                    ease: "back.out(1.2)"
+                }, 0.1);
+            }
+        });
+    }
+
+    const toggleBtn = document.getElementById('toggleRevBtn');
+    const revSection = document.getElementById('view-revenue');
+    let revInitialized = false;
+
+    toggleBtn.addEventListener('click', () => {
+        toggleBtn.classList.toggle('active');
+        
+        if (revSection.style.display === 'none' || revSection.style.display === '') {
+            revSection.style.display = 'block';
+            gsap.fromTo(revSection, { height: 0, opacity: 0 }, { height: 'auto', opacity: 1, duration: 0.5, ease: "power2.out", onComplete: () => {
+                ScrollTrigger.refresh();
+                if(!revInitialized) {
+                    initRevAnimations();
+                    revInitialized = true;
+                }
+            }});
+        } else {
+            gsap.to(revSection, { height: 0, opacity: 0, duration: 0.5, ease: "power2.in", onComplete: () => {
+                revSection.style.display = 'none';
+                ScrollTrigger.refresh();
+            }});
         }
     });
 
-    const rows = gsap.utils.toArray('.node-row');
-
-    rows.forEach((row) => {
-        const card = row.querySelector('.holo-card');
-        const title = row.querySelector('.anim-title');
-        const visual = row.querySelector('.abstract-visual');
-        
-        let tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: row,
-                start: "top 80%",
-                toggleActions: "play none none reverse"
-            }
-        });
-
-        tl.from(card, {
-            opacity: 0,
-            y: 100,
-            rotationX: -10,
-            transformPerspective: 1000,
-            duration: 0.8,
-            ease: "power3.out"
-        }, 0);
-
-        tl.from(title, {
-            opacity: 0,
-            x: -30,
-            duration: 0.6,
-            ease: "power2.out"
-        }, 0.2); 
-
-        tl.from(visual, {
-            opacity: 0,
-            scale: 0.5,
-            rotation: -45,
-            duration: 1,
-            ease: "back.out(1.5)"
-        }, 0.1);
+    const bentoItems = document.querySelectorAll('.bento-anim');
+    
+    gsap.fromTo(bentoItems, {
+        opacity: 0,
+        y: 40
+    }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+            trigger: "#view-migration",
+            start: "top 80%",
+            toggleActions: "play none none reverse"
+        }
     });
 
-    // --- Cyber Confetti Particle System ---
-    const btn = document.getElementById('launchDemo');
+    const confettiBtns = document.querySelectorAll('.trigger-confetti');
     
-    btn.addEventListener('click', () => {
-        btn.innerText = "System Activated...";
-        
-        const duration = 2500;
-        const end = Date.now() + duration;
-
-        (function frame() {
-            // Colors update based on current theme
-            const isLightMode = document.body.classList.contains('light-mode');
-            const colors = isLightMode ? ['#0176d3', '#ffffff', '#2e844a'] : ['#9dfc5d', '#00d2ff', '#ffffff'];
+    confettiBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const originalText = e.target.innerHTML;
+            e.target.innerText = "Processing...";
             
-            confetti({
-                particleCount: 5,
-                angle: 60,
-                spread: 70,
-                origin: { x: 0 },
-                colors: colors,
-                shapes: ['square', 'circle']
-            });
-            confetti({
-                particleCount: 5,
-                angle: 120,
-                spread: 70,
-                origin: { x: 1 },
-                colors: colors,
-                shapes: ['square', 'circle']
-            });
+            const duration = 2500;
+            const end = Date.now() + duration;
 
-            if (Date.now() < end) {
-                requestAnimationFrame(frame);
-            } else {
-                btn.innerText = "Initialize System Demo";
-            }
-        }());
+            (function frame() {
+                const isLightMode = document.body.classList.contains('light-mode');
+                const colors = isLightMode ? ['#0176d3', '#ffffff', '#2e844a'] : ['#9dfc5d', '#00d2ff', '#ffffff'];
+                
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 70,
+                    origin: { x: 0 },
+                    colors: colors,
+                    shapes: ['square', 'circle']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 70,
+                    origin: { x: 1 },
+                    colors: colors,
+                    shapes: ['square', 'circle']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                } else {
+                    e.target.innerHTML = originalText;
+                }
+            }());
+        });
     });
 </script>
 
